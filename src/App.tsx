@@ -2,8 +2,7 @@ import { useEffect, useRef } from "react";
 import "./App.css";
 
 const FRAME_COUNT = 181;
-const framePath = (index: number) =>
-  `/frame-hig/ezgif-frame-${String(index + 1).padStart(3, "0")}.png`;
+const framePath = (index: number) => `/frame-hig/ezgif-frame-${String(index + 1).padStart(3, "0")}.png`;
 
 function ScrollFrameCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -24,8 +23,6 @@ function ScrollFrameCanvas() {
     let width = 0;
     let height = 0;
     let frameRequest = 0;
-
-    // เก็บภาพล่าสุดที่พร้อมวาดไว้เป็น Fallback กันกระพริบ
     let lastValidImage: HTMLImageElement | null = null;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -33,21 +30,12 @@ function ScrollFrameCanvas() {
     const drawImageCover = (image: HTMLImageElement, alpha = 1) => {
       const sourceRatio = image.naturalWidth / image.naturalHeight;
       const canvasRatio = width / height;
-      const drawWidth =
-        sourceRatio > canvasRatio ? height * sourceRatio : width;
-      const drawHeight =
-        sourceRatio > canvasRatio ? height : width / sourceRatio;
+      const drawWidth = sourceRatio > canvasRatio ? height * sourceRatio : width;
+      const drawHeight = sourceRatio > canvasRatio ? height : width / sourceRatio;
       context.globalAlpha = alpha;
-      context.drawImage(
-        image,
-        (width - drawWidth) / 2,
-        (height - drawHeight) / 2,
-        drawWidth,
-        drawHeight,
-      );
+      context.drawImage(image, (width - drawWidth) / 2, (height - drawHeight) / 2, drawWidth, drawHeight);
     };
 
-    // ฟังก์ชันช่วย load เฟรมตาม index
     const loadFrame = (index: number) => {
       if (index < 0 || index >= FRAME_COUNT || frames[index]) return;
       const image = new Image();
@@ -59,9 +47,8 @@ function ScrollFrameCanvas() {
       frames[index] = image;
     };
 
-    // Smart Preload: โหลดภาพรอบๆ ตำแหน่งที่ Scroll อยู่ปัจจุบันก่อน
     const preloadNearbyFrames = (centerIndex: number) => {
-      const RANGE = 8; // โหลดล่วงหน้าและย้อนหลัง 8 เฟรม
+      const RANGE = 8;
       for (let i = -RANGE; i <= RANGE; i++) {
         const target = centerIndex + i;
         if (target >= 0 && target < FRAME_COUNT) {
@@ -81,19 +68,16 @@ function ScrollFrameCanvas() {
       const isFirstReady = first?.complete;
       const isSecondReady = upper !== lower && second?.complete;
 
-      // อัปเดตภาพล่าสุดที่พร้อมใช้งาน
       if (isFirstReady && first) lastValidImage = first;
       else if (isSecondReady && second) lastValidImage = second;
 
-      // 1. วาด Fallback ภาพที่พร้อมล่าสุดไว้เต็มเฟรมเสมอ (ป้องกันฉากดำกระพริบ)
       if (lastValidImage) {
         drawImageCover(lastValidImage, 1);
       } else {
-        context.fillStyle = "#16110b";
+        context.fillStyle = "#e8eef0";
         context.fillRect(0, 0, width, height);
       }
 
-      // 2. ถ้าทั้ง 2 ภาพพร้อม จึงทำ Crossfade Blending
       if (isFirstReady && isSecondReady && first && second) {
         drawImageCover(first, 1 - blend);
         drawImageCover(second, blend);
@@ -121,24 +105,16 @@ function ScrollFrameCanvas() {
       }
       const start = section.offsetTop;
       const distance = Math.max(section.offsetHeight - window.innerHeight, 1);
-      const progress = Math.min(
-        1,
-        Math.max(0, (window.scrollY - start) / distance),
-      );
+      const progress = Math.min(1, Math.max(0, (window.scrollY - start) / distance));
       targetFrame = progress * (FRAME_COUNT - 1);
-
-      // ทุกครั้งที่ scroll ให้สั่ง preload ภาพรอบๆ ตำแหน่งใหม่ทันที
       preloadNearbyFrames(Math.round(targetFrame));
     };
 
-    // โหลดเฟรมแรกทันที + สั่ง preload ล่วงหน้า 15 เฟรมแรก
     for (let i = 0; i < 15; i++) loadFrame(i);
 
     const tick = () => {
-      currentFrame +=
-        (targetFrame - currentFrame) * (reducedMotion.matches ? 1 : 0.12);
-      if (Math.abs(targetFrame - currentFrame) < 0.002)
-        currentFrame = targetFrame;
+      currentFrame += (targetFrame - currentFrame) * (reducedMotion.matches ? 1 : 0.12);
+      if (Math.abs(targetFrame - currentFrame) < 0.002) currentFrame = targetFrame;
       render();
       frameRequest = window.requestAnimationFrame(tick);
     };
@@ -166,48 +142,126 @@ function ScrollFrameCanvas() {
   );
 }
 
+function InkMotif() {
+  return (
+    <svg className="ink-motif" viewBox="0 0 920 520" fill="none" aria-hidden="true">
+      <defs>
+        <radialGradient id="void" cx="58%" cy="42%" r="42%">
+          <stop offset="0%" stopColor="#1c2422" />
+          <stop offset="55%" stopColor="#0c1211" />
+          <stop offset="100%" stopColor="#070a0a" />
+        </radialGradient>
+        <radialGradient id="goldCore" cx="50%" cy="45%" r="50%">
+          <stop offset="0%" stopColor="#f6e7b4" />
+          <stop offset="45%" stopColor="#d4b56a" />
+          <stop offset="100%" stopColor="#9a7a38" />
+        </radialGradient>
+        <linearGradient id="goldArc" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#f0dca0" stopOpacity="0" />
+          <stop offset="35%" stopColor="#e6c878" />
+          <stop offset="70%" stopColor="#c4a056" />
+          <stop offset="100%" stopColor="#e8d9a4" stopOpacity="0.2" />
+        </linearGradient>
+      </defs>
+
+      <circle cx="250" cy="188" r="188" stroke="url(#goldArc)" strokeWidth="1.15" />
+      <circle cx="70" cy="162" r="4.2" fill="#e8d39a" />
+      <circle cx="70" cy="162" r="1.5" fill="#fff6d4" />
+
+      <g className="ink-motif-orb">
+        <circle cx="790" cy="150" r="108" fill="url(#void)" />
+        <circle cx="790" cy="150" r="108" stroke="#c9a86a" strokeWidth="0.6" opacity="0.4" />
+        <circle cx="790" cy="150" r="11" fill="url(#goldCore)" />
+        <circle cx="790" cy="147" r="3.2" fill="#fff4c8" opacity="0.8" />
+        <circle cx="742" cy="98" r="2.1" fill="#e8d39a" />
+        <circle cx="848" cy="122" r="1.4" fill="#f0e0a8" />
+        <circle cx="820" cy="214" r="1.8" fill="#d4b56a" />
+        <circle cx="752" cy="220" r="1.1" fill="#e8d39a" />
+      </g>
+    </svg>
+  );
+}
+
+const works = [
+  {
+    medium: "Scroll installation",
+    title: "Hanging Ink",
+    detail:
+      "A shan-shui room that redraws itself as the visitor walks. Fog, pine, and gold dust stay in the same breath as the hand.",
+  },
+  {
+    medium: "Room-scale 3D",
+    title: "Orbit Garden",
+    detail:
+      "A circular path through mist. Each step opens a new ridge; the last step closes the circle into a single gold point.",
+  },
+  {
+    medium: "Realtime portrait",
+    title: "Third Breath",
+    detail: "A live figure that inhales proximity. Stand still and the ink settles. Lean in and the landscape splits.",
+  },
+];
+
 function App() {
   return (
     <main className="dreamframe">
       <ScrollFrameCanvas />
       <div className="ui-layer">
-        <header className="topbar">
-          <a className="brand" href="#top" aria-label="Dreamframe home">
-            <span className="brand-mark">D</span>
-            <span>
-              DREAM
+        <section className="hero" id="top">
+          <div className="hero-stage">
+            <InkMotif />
+            <h1>Third</h1>
+            <p className="hero-name">Pong-amorn Wongchalermthan</p>
+            <p className="hero-role">3D interactive artist &amp; creative developer</p>
+            <p className="lede">
+              I craft immersive 3D interactive experiences
               <br />
-              FRAME
-            </span>
-          </a>
-          <nav aria-label="Primary navigation">
-            <a href="#create">Create</a>
-            <a href="#gallery">Gallery</a>
-            <a href="#styles">Styles</a>
-            <a href="#pricing">Pricing</a>
-          </nav>
-          <a className="login" href="#login">
-            Sign in <span>↗</span>
-          </a>
-        </header>
-        <section className="hero-content" id="top">
-          <p className="eyebrow">
-            <span /> Website for Apimuk <span />
-          </p>
-          <h1>
-            <div>Dream</div>
-            <div>
-              <em>Frame</em>
+              that blend art, technology, and storytelling.
+            </p>
+            <div className="hero-actions">
+              <a className="pill pill-ink" href="#work">
+                <span>+</span> Explore work <span>+</span>
+              </a>
+              <a className="pill pill-mist" href="#about">
+                <span>◇</span> About me <span>◇</span>
+              </a>
             </div>
-          </h1>
-          <p className="lede">
-            Where imagination takes form.
-            <br />
-            Craft worlds that linger long after the first glance.
-          </p>
-          <a className="create-button" href="#create">
-            Start Creating <span>→</span>
-          </a>
+          </div>
+        </section>
+
+        <div className="journey" aria-hidden="true" />
+
+        <section className="panel" id="work">
+          <header className="panel-head">
+            <p>Selected work</p>
+            <h2>Pieces you can walk through</h2>
+          </header>
+          <ul className="work-list">
+            {works.map((work) => (
+              <li key={work.title}>
+                <p className="work-medium">{work.medium}</p>
+                <h3>{work.title}</h3>
+                <p>{work.detail}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="panel panel-about" id="about">
+          <header className="panel-head">
+            <p>About</p>
+            <h2>A third path between brush and engine</h2>
+          </header>
+          <div className="about-grid">
+            <p>
+              Pong-amorn Wongchalermthan works as Third — a 3D interactive artist and creative developer who treats
+              landscape painting as a live system, not a still image.
+            </p>
+            <p>
+              The work sits where ink, spatial computing, and story share a single surface. Visitors do not look at a
+              scene. They enter the stroke and leave a trace.
+            </p>
+          </div>
         </section>
       </div>
     </main>

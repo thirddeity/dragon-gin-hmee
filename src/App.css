@@ -1,21 +1,28 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:wght@400;500;600&family=Outfit:wght@360;420;500&display=swap");
 @import "tailwindcss";
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .dreamframe {
-  --ink: #113d38;
-  --gold: #ba8231;
-  min-height: 420svh;
+  --ink: #141c1a;
+  --pine: #1d2a27;
+  --gold: #c9a86a;
+  --gold-soft: #e4d2a0;
+  --mist: #f3f6f4;
+  --stone: #5b6864;
+  min-height: 360svh;
   position: relative;
   isolation: isolate;
   color: var(--ink);
   background: transparent;
 }
 
-/* Full-screen pinned canvas. It shares the page's background tone to avoid visible edges while the sequence loads. */
 .scene-layer {
   position: sticky;
   top: 0;
@@ -23,7 +30,7 @@
   width: 100%;
   height: 100svh;
   overflow: hidden;
-  background: #16110b;
+  background: #e8eef0;
   pointer-events: none;
 }
 
@@ -36,230 +43,268 @@
 .ui-layer {
   position: relative;
   z-index: 1;
-  min-height: 100svh;
   margin-top: -100svh;
 }
 
-.topbar {
-  height: 102px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 25px clamp(28px, 5.3vw, 82px);
-  position: relative;
-  font:
-    500 11px/1 "DM Mono",
-    monospace;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  color: #103c37;
-  font:
-    700 19px/0.78 "Cormorant Garamond",
-    Georgia,
-    serif;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-}
-
-.brand-mark {
+.hero {
   display: grid;
   place-items: center;
-  width: 43px;
-  height: 43px;
-  border: 1px solid #194941;
-  border-radius: 50%;
-  font-size: 27px;
-  font-style: italic;
+  min-height: 100svh;
+  padding: 8svh 24px 10svh;
 }
 
-nav {
-  display: flex;
-  gap: clamp(22px, 3.5vw, 55px);
-  margin-left: 6vw;
-}
-
-nav a,
-.login {
-  color: #123f3a;
-  text-decoration: none;
-}
-
-nav a {
-  transition: color 0.2s;
-}
-
-nav a:hover {
-  color: #a86218;
-}
-
-.login span {
-  margin-left: 6px;
-  font-size: 15px;
-}
-
-.hero-content {
+.hero-stage {
   position: relative;
-  width: min(570px, calc(100% - 40px));
-  margin: clamp(50px, 8vh, 105px) auto 0;
+  width: min(820px, 100%);
   text-align: center;
 }
 
-.eyebrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0 0 12px;
-  color: #1a5a51;
-  font:
-    500 10px/1 "DM Mono",
-    monospace;
-  letter-spacing: 0.34em;
+.ink-motif {
+  position: absolute;
+  left: 52%;
+  top: 18%;
+  width: min(780px, 128%);
+  transform: translate(-50%, -28%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.94;
 }
 
-.eyebrow span {
-  width: 30px;
-  height: 1px;
-  background: #c99039;
+.ink-motif-orb {
+  transform-origin: 790px 150px;
+  animation: orb-drift 36s linear infinite;
 }
 
-h1 {
+.hero-name,
+.hero h1,
+.hero-role,
+.lede,
+.hero-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
   margin: 0;
   font:
-    700 clamp(83px, 10vw, 156px)/0.67 "Cormorant Garamond",
-    Georgia,
+    500 clamp(72px, 13vw, 132px) / 0.86 "Playfair Display",
+    "Times New Roman",
     serif;
-  letter-spacing: -0.073em;
-  color: #103e38;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.45);
+  letter-spacing: -0.03em;
+  color: #121a18;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  animation: rise 1100ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
-h1 em {
-  font-style: normal;
-  margin-left: 0.25em;
+.hero-name {
+  margin: 18px 0 0;
+  color: var(--gold);
+  font:
+    400 clamp(18px, 2.1vw, 26px) / 1.2 "Cormorant Garamond",
+    Georgia,
+    serif;
+  letter-spacing: 0.08em;
+  animation: rise 1100ms cubic-bezier(0.23, 1, 0.32, 1) 80ms both;
+}
+
+.hero-role {
+  margin: 16px 0 0;
+  color: #2a3633;
+  font:
+    420 11px / 1 "Outfit",
+    sans-serif;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  animation: rise 1100ms cubic-bezier(0.23, 1, 0.32, 1) 140ms both;
 }
 
 .lede {
-  margin: 31px 0 25px;
+  margin: 28px 0 0;
+  color: #3d4a46;
   font:
-    400 14px/1.7 "Manrope",
+    360 15px / 1.7 "Outfit",
     sans-serif;
-  letter-spacing: 0.035em;
-  color: #315b56;
+  letter-spacing: 0.01em;
+  animation: rise 1100ms cubic-bezier(0.23, 1, 0.32, 1) 200ms both;
 }
 
-.create-button {
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 34px;
+  animation: rise 1100ms cubic-bezier(0.23, 1, 0.32, 1) 280ms both;
+}
+
+.pill {
   display: inline-flex;
   align-items: center;
-  gap: 37px;
-  padding: 15px 18px 15px 25px;
-  color: #fffaf0;
-  background: linear-gradient(102deg, #c34c25, #a84372 55%, #553d8d);
-  border-radius: 5px 18px 6px 15px;
-  box-shadow:
-    0 8px 21px rgba(89, 42, 43, 0.24),
-    inset 0 0 0 1px rgba(255, 225, 164, 0.45);
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 999px;
   text-decoration: none;
   font:
-    500 12px/1 "DM Mono",
-    monospace;
-  letter-spacing: 0.07em;
+    420 11px / 1 "Outfit",
+    sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   transition:
-    transform 0.25s,
-    box-shadow 0.25s;
+    transform 140ms ease,
+    background 200ms ease,
+    box-shadow 200ms ease;
 }
 
-.create-button:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    0 14px 27px rgba(89, 42, 43, 0.3),
-    inset 0 0 0 1px rgba(255, 225, 164, 0.65);
+.pill:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
 }
 
-.create-button span {
-  display: grid;
-  place-items: center;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
-  font-size: 16px;
+.pill:active {
+  transform: scale(0.97);
 }
 
-.scroll-cue {
-  position: absolute;
-  top: calc(100svh - 47px);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  color: #1c5149;
+.pill span {
+  font-size: 10px;
+  opacity: 0.72;
+}
+
+.pill-ink {
+  color: #1a2220;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(28, 36, 34, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.pill-mist {
+  color: #1a2220;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+}
+
+.pill-ink:hover,
+.pill-mist:hover {
+  background: rgba(255, 252, 246, 0.88);
+  box-shadow: 0 8px 24px rgba(20, 28, 26, 0.08);
+}
+
+.journey {
+  height: 120svh;
+}
+
+.panel {
+  width: min(980px, calc(100% - 40px));
+  margin: 0 auto 12vh;
+  padding: 42px 40px 46px;
+  border: 1px solid rgba(201, 168, 106, 0.28);
+  border-radius: 28px;
+  background: rgba(247, 249, 248, 0.72);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 20px 60px rgba(16, 22, 20, 0.08);
+}
+
+.panel-head p {
+  margin: 0 0 8px;
+  color: var(--gold);
   font:
-    500 8px "DM Mono",
-    monospace;
-  letter-spacing: 0.2em;
+    420 11px / 1 "Outfit",
+    sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
-.scroll-cue b {
-  font-size: 20px;
-  font-weight: 400;
+.panel-head h2 {
+  margin: 0 0 28px;
+  font:
+    500 clamp(28px, 4vw, 42px) / 1.1 "Playfair Display",
+    serif;
+  letter-spacing: -0.03em;
 }
 
-@media (max-width: 700px) {
-  .dreamframe {
-    min-height: 420svh;
+.work-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-list li {
+  padding-top: 18px;
+  border-top: 1px solid rgba(20, 28, 26, 0.12);
+}
+
+.work-medium {
+  margin: 0 0 10px;
+  color: var(--stone);
+  font:
+    420 10px / 1 "Outfit",
+    sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.work-list h3 {
+  margin: 0 0 10px;
+  font:
+    500 26px / 1.1 "Playfair Display",
+    serif;
+}
+
+.work-list p:last-child,
+.about-grid p {
+  margin: 0;
+  color: #3a4642;
+  font:
+    360 15px / 1.7 "Outfit",
+    sans-serif;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes orb-drift {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 800px) {
+  .work-list,
+  .about-grid {
+    grid-template-columns: 1fr;
   }
 
-  .topbar {
-    height: 75px;
-    padding: 18px 20px;
+  .panel {
+    padding: 28px 22px 32px;
   }
 
-  .brand {
-    font-size: 16px;
-  }
-
-  .brand-mark {
-    width: 36px;
-    height: 36px;
-    font-size: 23px;
-  }
-
-  nav {
-    display: none;
-  }
-
-  .login {
-    font-size: 9px;
-  }
-
-  .hero-content {
-    margin-top: 65px;
-  }
-
-  .eyebrow {
-    font-size: 8px;
-  }
-
-  .lede {
-    margin-top: 29px;
-    font-size: 12px;
-  }
-
-  .scroll-cue {
+  .lede br {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .dreamframe {
     min-height: 100svh;
   }
@@ -270,5 +315,18 @@ h1 em {
 
   .ui-layer {
     margin-top: 0;
+  }
+
+  .journey {
+    display: none;
+  }
+
+  .hero-name,
+  .hero h1,
+  .hero-role,
+  .lede,
+  .hero-actions,
+  .ink-motif-orb {
+    animation: none;
   }
 }
